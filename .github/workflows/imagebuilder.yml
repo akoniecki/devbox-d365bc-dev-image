@@ -1,0 +1,26 @@
+name: 'bc-devbox-generic - build and publish'
+ 
+on:
+    workflow_dispatch:
+ 
+jobs:
+ 
+  Deploy:
+    name: 'Image Builder'
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v2
+ 
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}    
+
+    - name: 'Deploy Bicep'
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+        ResourceGroupName: ${{ secrets.ResourceGroupName }}
+        template: ./bc-devbox-generic.bicep
+        failOnStdErr: false
