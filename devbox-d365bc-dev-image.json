@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "16481217334015610097"
+      "templateHash": "9795959231528281194"
     }
   },
   "parameters": {
@@ -46,7 +46,7 @@
     },
     "initialSetupScript": {
       "type": "string",
-      "defaultValue": "choco install -y docker-engine\nStart-Service docker\nInstall-Module BcContainerHelper -force\nGet-BcContainers\n$hostHelperFolder = 'C:\\ProgramData\\BcContainerHelper'\nif (-not (Test-Path $hostHelperFolder)) { New-Item -Path $hostHelperFolder -ItemType Directory }\n$acl = Get-Acl -Path $hostHelperFolder\n$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($env:USERNAME, 'FullControl', 'ContainerInherit, ObjectInherit', 'InheritOnly', 'Allow')\n$acl.AddAccessRule($rule)\n$hostsFile = \"${env:SystemRoot}\\System32\\drivers\\etc\\hosts\"\nSet-Acl -Path $hostHelperFolder -AclObject $acl\n$acl = Get-Acl -Path $hostsFile\n$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($env:USERNAME, 'Modify', 'Allow')\n$acl.AddAccessRule($rule)\nSet-Acl -Path $hostsFile -AclObject $acl\n$npipe = \"//./pipe/docker_engine\"\n$dInfo = New-Object \"System.IO.DirectoryInfo\" -ArgumentList $npipe                                               \n$dSec = $dInfo.GetAccessControl()                                                                                \n$fullControl =[System.Security.AccessControl.FileSystemRights]::FullControl                                       \n$allow =[System.Security.AccessControl.AccessControlType]::Allow                                                  \n$rule = New-Object System.Security.AccessControl.FileSystemAccessRule\" -ArgumentList $env:USERNAME, $fullControl, $allow\n$dSec.AddAccessRule($rule)                                                                                        \n$dInfo.SetAccessControl($dSec)\n",
+      "defaultValue": "choco install -y docker-engine;\nStart-Service docker;\nInstall-Module BcContainerHelper -force;\nGet-BcContainers;\n$hostHelperFolder = 'C:\\\\ProgramData\\\\BcContainerHelper';\nif (-not (Test-Path $hostHelperFolder)) { New-Item -Path $hostHelperFolder -ItemType Directory };\n$acl = Get-Acl -Path $hostHelperFolder;\n$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($env:USERNAME, 'FullControl', 'ContainerInherit, ObjectInherit', 'InheritOnly', 'Allow');\n$acl.AddAccessRule($rule);\n$hostsFile = '${env:SystemRoot}\\\\System32\\\\drivers\\\\etc\\\\hosts';\nSet-Acl -Path $hostHelperFolder -AclObject $acl;\n$acl = Get-Acl -Path $hostsFile;\n$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($env:USERNAME, 'Modify', 'Allow');\n$acl.AddAccessRule($rule);\nSet-Acl -Path $hostsFile -AclObject $acl;\n$npipe = '//./pipe/docker_engine';\n$dInfo = New-Object \"System.IO.DirectoryInfo\" -ArgumentList $npipe;\n$dSec = $dInfo.GetAccessControl();\n$fullControl = [System.Security.AccessControl.FileSystemRights]::FullControl;\n$allow = [System.Security.AccessControl.AccessControlType]::Allow;\n$rule = New-Object \"System.Security.AccessControl.FileSystemAccessRule\" -ArgumentList $env:USERNAME, $fullControl, $allow;\n$dSec.AddAccessRule($rule);\n$dInfo.SetAccessControl($dSec);\n",
       "metadata": {
         "description": "PowerShell script content for initial setup after Dev Box first startup."
       }
