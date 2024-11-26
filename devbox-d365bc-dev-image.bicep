@@ -75,14 +75,14 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
           '$extensions = "ms-dynamics-smb.al","github.vscode-pull-request-github","github.vscode-github-actions","ms-azuretools.vscode-docker","ms-vscode.powershell"'
           'foreach ($ext in $extensions) { code --install-extension $ext }'
         ]
-      },
+      }
       {
         type: 'PowerShell'
         name: 'Save Initial Setup Script'
         inline: [
           'New-Item -ItemType Directory -Force -Path "C:\\scripts"; $scriptContent = @"\'${initialSetupScript}\'"@; [IO.File]::WriteAllText("C:\\scripts\\initialSetup.ps1", $scriptContent)'
         ]
-      },
+      }
       {
         type: 'WindowsUpdate'
         searchCriteria: 'IsInstalled=0'
@@ -91,12 +91,12 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
           'include:$true'
         ]
         updateLimit: 20
-      },
+      }
       {
         type: 'WindowsRestart'
         restartCommand: 'shutdown /r /f /t 0'
         restartTimeout: '5m'
-      },
+      }
       {
         type: 'PowerShell'
         name: 'Final Setup Execution'
