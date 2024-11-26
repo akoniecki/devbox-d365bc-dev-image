@@ -1,19 +1,19 @@
 @description('Name of the Azure Image Builder resource')
 param azureImageBuilderName string = 'devbox-d365bc-imagebuilder'
 
-@description('Azure location for the resources')
-param location string = resourceGroup().location
+@description('Azure location for the resources (e.g., westeurope, eastus).')
+param location string = 'westeurope'
 
-@description('Name of the Azure Compute Gallery')
+@description('Name of the Azure Compute Gallery.')
 param galleryName string = 'devbox-d365bc-gallery'
 
-@description('Name of the image definition in the Azure Compute Gallery')
+@description('Name of the image definition in the Azure Compute Gallery.')
 param imageDefName string = 'devbox-d365bc-dev-image'
 
 @description('Name of the resource group used for staging resources during image building.')
 param stagingResourceGroupName string = 'imagebuilder-staging'
 
-@description('PowerShell script content for initial setup after Dev Box first startup')
+@description('PowerShell script content for initial setup after Dev Box first startup.')
 param initialSetupScript string = '''
 choco install -y docker-engine
 Start-Service docker
