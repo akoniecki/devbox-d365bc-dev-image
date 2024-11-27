@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "9795959231528281194"
+      "templateHash": "10526401687358806362"
     }
   },
   "parameters": {
@@ -141,7 +141,7 @@
         "vmProfile": {
           "vmSize": "Standard_D16s_v5"
         },
-        "stagingResourceGroup": "[resourceId('Microsoft.Resources/resourceGroups', parameters('stagingResourceGroupName'))]"
+        "stagingResourceGroup": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('stagingResourceGroupName'))]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'imagebuilder-identity')]"

@@ -123,6 +123,6 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
     vmProfile: {
       vmSize: 'Standard_D16s_v5'
     }
-    stagingResourceGroup: resourceId('Microsoft.Resources/resourceGroups', stagingResourceGroupName)
+    stagingResourceGroup: subscriptionResourceId('Microsoft.Resources/resourceGroups', stagingResourceGroupName)
   }
 }
