@@ -24,7 +24,7 @@ if (-not (Test-Path $hostHelperFolder)) { New-Item -Path $hostHelperFolder -Item
 $acl = Get-Acl -Path $hostHelperFolder;
 $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($env:USERNAME, 'FullControl', 'ContainerInherit, ObjectInherit', 'InheritOnly', 'Allow');
 $acl.AddAccessRule($rule);
-$hostsFile = '${env:SystemRoot}\\System32\\drivers\\etc\\hosts';
+$hostsFile = "$env:SystemRoot\System32\drivers\etc\hosts";
 Set-Acl -Path $hostHelperFolder -AclObject $acl;
 $acl = Get-Acl -Path $hostsFile;
 $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($env:USERNAME, 'Modify', 'Allow');
@@ -38,6 +38,8 @@ $allow = [System.Security.AccessControl.AccessControlType]::Allow;
 $rule = New-Object "System.Security.AccessControl.FileSystemAccessRule" -ArgumentList $env:USERNAME, $fullControl, $allow;
 $dSec.AddAccessRule($rule);
 $dInfo.SetAccessControl($dSec);
+$extensions = "ms-dynamics-smb.al","github.vscode-pull-request-github","github.vscode-github-actions","ms-azuretools.vscode-docker","ms-vscode.powershell"
+foreach ($ext in $extensions) { code --install-extension $ext }
 '''
 
 resource devboxidentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
@@ -72,17 +74,20 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
           '$installerPath = "$env:TEMP\\GitHubDesktopSetup-x64.msi"'
           '(new-object net.webclient).DownloadFile("https://central.github.com/deployments/desktop/desktop/latest/win32?format=msi", $installerPath)'
           'Start-Process msiexec.exe -ArgumentList "/i", $installerPath, "/qn" -NoNewWindow -Wait'
-          '$extensions = "ms-dynamics-smb.al","github.vscode-pull-request-github","github.vscode-github-actions","ms-azuretools.vscode-docker","ms-vscode.powershell"'
-          'foreach ($ext in $extensions) { code --install-extension $ext }'
         ]
       }
       {
         type: 'PowerShell'
         name: 'Save Initial Setup Script'
         inline: [
-          'New-Item -ItemType Directory -Force -Path "C:\\scripts"; $scriptContent = @"\'${initialSetupScript}\'"@; [IO.File]::WriteAllText("C:\\scripts\\initialSetup.ps1", $scriptContent)'
+          '''
+          New-Item -ItemType Directory -Force -Path C:\scripts
+          Set-Content -Path "C:\scripts\initialSetup.ps1" -Value @"
+          ${initialSetupScript}
+          "@ -Force
+          '''        
         ]
-      }
+      }                
       {
         type: 'WindowsUpdate'
         searchCriteria: 'IsInstalled=0'
