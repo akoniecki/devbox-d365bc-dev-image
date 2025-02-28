@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16849186865105543193"
+      "templateHash": "3986613365006382603"
     }
   },
   "parameters": {
@@ -85,19 +85,11 @@
           },
           {
             "type": "PowerShell",
-            "name": "Create Initial Setup Script",
+            "name": "Download InitialSetup Script",
             "inline": [
-              "        New-Item -ItemType Directory -Force -Path C:\\scripts\n        @\"\n        choco install -y docker-engine;\n        Start-Service docker;\n        Install-Module BcContainerHelper -force;\n        Get-BcContainers;\n        $hostHelperFolder = 'C:\\\\ProgramData\\\\BcContainerHelper';\n        if (-not (Test-Path $hostHelperFolder)) { New-Item -Path $hostHelperFolder -ItemType Directory };\n        $acl = Get-Acl -Path $hostHelperFolder;\n        $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($env:USERNAME, 'FullControl', 'ContainerInherit, ObjectInherit', 'InheritOnly', 'Allow');\n        $acl.AddAccessRule($rule);\n        $hostsFile = \"$env:SystemRoot\\System32\\drivers\\etc\\hosts\";\n        Set-Acl -Path $hostHelperFolder -AclObject $acl;\n        $acl = Get-Acl -Path $hostsFile;\n        $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($env:USERNAME, 'Modify', 'Allow');\n        $acl.AddAccessRule($rule);\n        Set-Acl -Path $hostsFile -AclObject $acl;\n        $npipe = '//./pipe/docker_engine';\n        $dInfo = New-Object \"System.IO.DirectoryInfo\" -ArgumentList $npipe;\n        $dSec = $dInfo.GetAccessControl();\n        $fullControl = [System.Security.AccessControl.FileSystemRights]::FullControl;\n        $allow = [System.Security.AccessControl.AccessControlType]::Allow;\n        $rule = New-Object \"System.Security.AccessControl.FileSystemAccessRule\" -ArgumentList $env:USERNAME, $fullControl, $allow;\n        $dSec.AddAccessRule($rule);\n        $dInfo.SetAccessControl($dSec);\n        $extensions = \"ms-dynamics-smb.al\",\"github.vscode-pull-request-github\",\"github.vscode-github-actions\",\"ms-azuretools.vscode-docker\",\"ms-vscode.powershell\"\n        foreach ($ext in $extensions) { code --install-extension $ext }\n        \"@ | Out-File -FilePath \"C:\\scripts\\initialSetup.ps1\" -Encoding utf8 -Force\n          "
+              "New-Item -ItemType Directory -Force -Path C:\\scripts",
+              "Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/akoniecki/devbox-d365bc-dev-image/main/initialSetup.ps1\" -OutFile \"C:\\scripts\\initialSetup.ps1\""
             ]
-          },
-          {
-            "type": "WindowsUpdate",
-            "searchCriteria": "IsInstalled=0",
-            "filters": [
-              "exclude:$_.Title -like \"*Preview*\"",
-              "include:$true"
-            ],
-            "updateLimit": 20
           },
           {
             "type": "WindowsRestart",
