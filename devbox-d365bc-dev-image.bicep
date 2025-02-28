@@ -37,7 +37,7 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
           'Set-ExecutionPolicy Bypass -Scope Process -Force'
           '[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072'
           'iex ((New-Object System.Net.WebClient).DownloadString("https://community.chocolatey.org/install.ps1"))'
-          'choco install -y Containers Microsoft-Hyper-V --source windowsfeatures'
+          'choco install Containers Microsoft-Hyper-V --source windowsfeatures'
           'choco install -y git.install'
           'choco install -y vscode'
           'choco install -y gh'
@@ -62,7 +62,7 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
       }
       {
         type: 'PowerShell'
-        name: 'Final Setup Execution'
+        name: 'Initial Setup RunOnce schedule'
         inline: [  
           'Set-ItemProperty -Path "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce" -Name "initialSetup" -Value "powershell.exe -File C:\\scripts\\initialSetup.ps1"'
         ] 
