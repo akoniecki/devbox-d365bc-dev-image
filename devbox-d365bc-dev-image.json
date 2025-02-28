@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "8989317985978008362"
+      "templateHash": "11138989608017267324"
     }
   },
   "parameters": {
@@ -42,13 +42,6 @@
       "defaultValue": "imagebuilder-staging",
       "metadata": {
         "description": "Name of the resource group used for staging resources during image building."
-      }
-    },
-    "initialSetupScript": {
-      "type": "string",
-      "defaultValue": "choco install -y docker-engine;\nStart-Service docker;\nInstall-Module BcContainerHelper -force;\nGet-BcContainers;\n$hostHelperFolder = 'C:\\\\ProgramData\\\\BcContainerHelper';\nif (-not (Test-Path $hostHelperFolder)) { New-Item -Path $hostHelperFolder -ItemType Directory };\n$acl = Get-Acl -Path $hostHelperFolder;\n$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($env:USERNAME, 'FullControl', 'ContainerInherit, ObjectInherit', 'InheritOnly', 'Allow');\n$acl.AddAccessRule($rule);\n$hostsFile = \"$env:SystemRoot\\System32\\drivers\\etc\\hosts\";\nSet-Acl -Path $hostHelperFolder -AclObject $acl;\n$acl = Get-Acl -Path $hostsFile;\n$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($env:USERNAME, 'Modify', 'Allow');\n$acl.AddAccessRule($rule);\nSet-Acl -Path $hostsFile -AclObject $acl;\n$npipe = '//./pipe/docker_engine';\n$dInfo = New-Object \"System.IO.DirectoryInfo\" -ArgumentList $npipe;\n$dSec = $dInfo.GetAccessControl();\n$fullControl = [System.Security.AccessControl.FileSystemRights]::FullControl;\n$allow = [System.Security.AccessControl.AccessControlType]::Allow;\n$rule = New-Object \"System.Security.AccessControl.FileSystemAccessRule\" -ArgumentList $env:USERNAME, $fullControl, $allow;\n$dSec.AddAccessRule($rule);\n$dInfo.SetAccessControl($dSec);\n$extensions = \"ms-dynamics-smb.al\",\"github.vscode-pull-request-github\",\"github.vscode-github-actions\",\"ms-azuretools.vscode-docker\",\"ms-vscode.powershell\"\nforeach ($ext in $extensions) { code --install-extension $ext }\n",
-      "metadata": {
-        "description": "PowerShell script content for initial setup after Dev Box first startup."
       }
     }
   },
@@ -92,9 +85,9 @@
           },
           {
             "type": "PowerShell",
-            "name": "Save Initial Setup Script",
+            "name": "Create Initial Setup Script",
             "inline": [
-              "          New-Item -ItemType Directory -Force -Path C:\\scripts\n          Set-Content -Path \"C:\\scripts\\initialSetup.ps1\" -Value @\"\n          ${initialSetupScript}\n          \"@ -Force\n          "
+              "        New-Item -ItemType Directory -Force -Path C:\\scripts\n        @\"\n        choco install -y docker-engine;\n        Start-Service docker;\n        Install-Module BcContainerHelper -force;\n        Get-BcContainers;\n        $hostHelperFolder = 'C:\\\\ProgramData\\\\BcContainerHelper';\n        if (-not (Test-Path $hostHelperFolder)) { New-Item -Path $hostHelperFolder -ItemType Directory };\n        $acl = Get-Acl -Path $hostHelperFolder;\n        $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($env:USERNAME, 'FullControl', 'ContainerInherit, ObjectInherit', 'InheritOnly', 'Allow');\n        $acl.AddAccessRule($rule);\n        $hostsFile = \"$env:SystemRoot\\System32\\drivers\\etc\\hosts\";\n        Set-Acl -Path $hostHelperFolder -AclObject $acl;\n        $acl = Get-Acl -Path $hostsFile;\n        $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($env:USERNAME, 'Modify', 'Allow');\n        $acl.AddAccessRule($rule);\n        Set-Acl -Path $hostsFile -AclObject $acl;\n        $npipe = '//./pipe/docker_engine';\n        $dInfo = New-Object \"System.IO.DirectoryInfo\" -ArgumentList $npipe;\n        $dSec = $dInfo.GetAccessControl();\n        $fullControl = [System.Security.AccessControl.FileSystemRights]::FullControl;\n        $allow = [System.Security.AccessControl.AccessControlType]::Allow;\n        $rule = New-Object \"System.Security.AccessControl.FileSystemAccessRule\" -ArgumentList $env:USERNAME, $fullControl, $allow;\n        $dSec.AddAccessRule($rule);\n        $dInfo.SetAccessControl($dSec);\n        $extensions = \"ms-dynamics-smb.al\",\"github.vscode-pull-request-github\",\"github.vscode-github-actions\",\"ms-azuretools.vscode-docker\",\"ms-vscode.powershell\"\n        foreach ($ext in $extensions) { code --install-extension $ext }\n        \"@ | Out-File -FilePath \"C:\\scripts\\initialSetup.ps1\" -Encoding utf8 -Force\n          "
             ]
           },
           {
