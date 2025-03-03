@@ -86,7 +86,7 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
     distribute: [{
         type: 'SharedImage'
         galleryImageId: resourceId('Microsoft.Compute/galleries/images', galleryName, imageDefName)
-        runOutputName: 'devbox-d365bc-imagebuilder-output'
+        runOutputName: 'devbox-d365bc-dev-image'
         replicationRegions: [
           location
         ]

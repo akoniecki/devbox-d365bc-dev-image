@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7428931447965670857"
+      "templateHash": "144753150800848202"
     }
   },
   "parameters": {
@@ -131,7 +131,7 @@
           {
             "type": "SharedImage",
             "galleryImageId": "[resourceId('Microsoft.Compute/galleries/images', parameters('galleryName'), parameters('imageDefName'))]",
-            "runOutputName": "devbox-d365bc-imagebuilder-output",
+            "runOutputName": "devbox-d365bc-dev-image",
             "replicationRegions": [
               "[parameters('location')]"
             ]
