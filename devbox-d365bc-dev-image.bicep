@@ -13,6 +13,12 @@ param imageDefName string = 'devbox-d365bc-dev-image'
 @description('Name of the resource group used for staging resources during image building.')
 param stagingResourceGroupName string = 'imagebuilder-staging'
 
+@description('Initial setup script URL')
+param initialSetupScript string = 'https://raw.githubusercontent.com/akoniecki/devbox-d365bc-dev-image/main/initialSetup.ps1'
+
+@description('Custom script URL (GitHub raw link or Azure storage container with SAS token)')
+param customScript string = ''
+
 resource devboxidentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
   location: location
   tags: {}
@@ -49,10 +55,14 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
       }
       {
         type: 'PowerShell'
-        name: 'Download InitialSetup Script'
+        name: 'D365BC Dev. Environment Setup'
         inline: [
           'New-Item -ItemType Directory -Force -Path C:\\scripts'
-          'Invoke-WebRequest -Uri "https://raw.githubusercontent.com/akoniecki/devbox-d365bc-dev-image/main/initialSetup.ps1" -OutFile "C:\\scripts\\initialSetup.ps1"'
+          'Invoke-WebRequest -Uri "${initialSetupScript}" -OutFile "C:\\scripts\\initialSetup.ps1"'
+          'if (![string]::IsNullOrEmpty("${customScript}")) {'
+          '    $customScriptPath = "C:\\scripts\\customSetup.ps1"'
+          '    Invoke-WebRequest -Uri "${customScript}" -OutFile $customScriptPath'
+          '}'
         ]
       }               
       {
@@ -62,9 +72,13 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
       }
       {
         type: 'PowerShell'
-        name: 'Initial Setup RunOnce schedule'
+        name: 'Setup RunOnce schedules'
         inline: [  
           'Set-ItemProperty -Path "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce" -Name "initialSetup" -Value "powershell.exe -File C:\\scripts\\initialSetup.ps1"'
+          'if (![string]::IsNullOrEmpty("${customScript}")) {'
+          '    $customScriptPath = "C:\\scripts\\customSetup.ps1"'
+          '    Set-ItemProperty -Path "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce" -Name "customSetup" -Value "powershell.exe -File $customScriptPath"'
+          '}'
         ] 
       }
     ]

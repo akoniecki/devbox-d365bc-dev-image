@@ -21,5 +21,5 @@ $allow = [System.Security.AccessControl.AccessControlType]::Allow;
 $rule = New-Object "System.Security.AccessControl.FileSystemAccessRule" -ArgumentList $env:USERNAME, $fullControl, $allow;
 $dSec.AddAccessRule($rule);
 $dInfo.SetAccessControl($dSec);
-$extensions = "ms-dynamics-smb.al","github.vscode-pull-request-github","github.vscode-github-actions","ms-azuretools.vscode-docker","ms-vscode.powershell"
+$extensions = "ms-dynamics-smb.al","github.vscode-pull-request-github","ms-azuretools.vscode-docker","ms-vscode.powershell"
 foreach ($ext in $extensions) { code --install-extension $ext }

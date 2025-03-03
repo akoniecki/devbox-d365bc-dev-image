@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "6942822406054867083"
+      "templateHash": "14857816016100777594"
     }
   },
   "parameters": {
@@ -42,6 +42,20 @@
       "defaultValue": "imagebuilder-staging",
       "metadata": {
         "description": "Name of the resource group used for staging resources during image building."
+      }
+    },
+    "initialSetupScript": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/akoniecki/devbox-d365bc-dev-image/main/initialSetup.ps1",
+      "metadata": {
+        "description": "Initial setup script URL"
+      }
+    },
+    "customScript": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Custom script URL (GitHub raw link or Azure storage container with SAS token)"
       }
     }
   },
@@ -85,10 +99,14 @@
           },
           {
             "type": "PowerShell",
-            "name": "Download InitialSetup Script",
+            "name": "D365BC Dev. Environment Setup",
             "inline": [
               "New-Item -ItemType Directory -Force -Path C:\\scripts",
-              "Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/akoniecki/devbox-d365bc-dev-image/main/initialSetup.ps1\" -OutFile \"C:\\scripts\\initialSetup.ps1\""
+              "[format('Invoke-WebRequest -Uri \"{0}\" -OutFile \"C:\\scripts\\initialSetup.ps1\"', parameters('initialSetupScript'))]",
+              "[format('if (![string]::IsNullOrEmpty(\"{0}\")) {{', parameters('customScript'))]",
+              "    $customScriptPath = \"C:\\scripts\\customSetup.ps1\"",
+              "[format('    Invoke-WebRequest -Uri \"{0}\" -OutFile $customScriptPath', parameters('customScript'))]",
+              "}"
             ]
           },
           {
@@ -98,9 +116,13 @@
           },
           {
             "type": "PowerShell",
-            "name": "Initial Setup RunOnce schedule",
+            "name": "Setup RunOnce schedules",
             "inline": [
-              "Set-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\" -Name \"initialSetup\" -Value \"powershell.exe -File C:\\scripts\\initialSetup.ps1\""
+              "Set-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\" -Name \"initialSetup\" -Value \"powershell.exe -File C:\\scripts\\initialSetup.ps1\"",
+              "[format('if (![string]::IsNullOrEmpty(\"{0}\")) {{', parameters('customScript'))]",
+              "    $customScriptPath = \"C:\\scripts\\customSetup.ps1\"",
+              "    Set-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\" -Name \"customSetup\" -Value \"powershell.exe -File $customScriptPath\"",
+              "}"
             ]
           }
         ],
