@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "14857816016100777594"
+      "templateHash": "7428931447965670857"
     }
   },
   "parameters": {
@@ -118,11 +118,12 @@
             "type": "PowerShell",
             "name": "Setup RunOnce schedules",
             "inline": [
-              "Set-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\" -Name \"initialSetup\" -Value \"powershell.exe -File C:\\scripts\\initialSetup.ps1\"",
+              "$runOnceCmd = \"powershell.exe -File C:\\scripts\\initialSetup.ps1\"",
               "[format('if (![string]::IsNullOrEmpty(\"{0}\")) {{', parameters('customScript'))]",
               "    $customScriptPath = \"C:\\scripts\\customSetup.ps1\"",
-              "    Set-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\" -Name \"customSetup\" -Value \"powershell.exe -File $customScriptPath\"",
-              "}"
+              "    $runOnceCmd += \" && powershell.exe -File $customScriptPath\"",
+              "}",
+              "Set-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\" -Name \"initialSetup\" -Value $runOnceCmd"
             ]
           }
         ],
