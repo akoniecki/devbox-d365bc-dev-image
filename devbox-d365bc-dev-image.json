@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "144753150800848202"
+      "templateHash": "1183262962803090226"
     }
   },
   "parameters": {
@@ -118,12 +118,12 @@
             "type": "PowerShell",
             "name": "Setup RunOnce schedules",
             "inline": [
-              "$runOnceCmd = \"powershell.exe -File C:\\scripts\\initialSetup.ps1\"",
+              "$wrapperScriptPath = \"C:\\scripts\\runOnceWrapper.ps1\"",
+              "Set-Content -Path $wrapperScriptPath -Value \"powershell.exe -File C:\\scripts\\initialSetup.ps1\"",
               "[format('if (![string]::IsNullOrEmpty(\"{0}\")) {{', parameters('customScript'))]",
-              "    $customScriptPath = \"C:\\scripts\\customSetup.ps1\"",
-              "    $runOnceCmd += \" && powershell.exe -File $customScriptPath\"",
+              "    Add-Content -Path $wrapperScriptPath -Value \"powershell.exe -File C:\\scripts\\customSetup.ps1\"",
               "}",
-              "Set-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\" -Name \"initialSetup\" -Value $runOnceCmd"
+              "Set-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\" -Name \"initialSetup\" -Value \"powershell.exe -File $wrapperScriptPath\""
             ]
           }
         ],
