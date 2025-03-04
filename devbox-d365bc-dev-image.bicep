@@ -75,9 +75,9 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
         name: 'Setup RunOnce schedules'
         inline: [  
           '$wrapperScriptPath = "C:\\scripts\\runOnceWrapper.ps1"'
-          'Set-Content -Path $wrapperScriptPath -Value "powershell.exe -File C:\\scripts\\initialSetup.ps1"' 
+          'Set-Content -Path $wrapperScriptPath -Value "powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -File C:\\scripts\\initialSetup.ps1"' 
           'if (![string]::IsNullOrEmpty("${customScript}")) {'
-          '    Add-Content -Path $wrapperScriptPath -Value "powershell.exe -File C:\\scripts\\customSetup.ps1"' 
+          '    Add-Content -Path $wrapperScriptPath -Value "powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -File C:\\scripts\\customSetup.ps1"' 
           '}'
           'Set-ItemProperty -Path "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce" -Name "initialSetup" -Value "powershell.exe -File $wrapperScriptPath"'
         ] 
