@@ -44,6 +44,7 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
           '[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072'
           'iex ((New-Object System.Net.WebClient).DownloadString("https://community.chocolatey.org/install.ps1"))'
           'choco install Containers Microsoft-Hyper-V --source windowsfeatures'
+          'wsl.exe --install'
           'choco install -y git.install'
           'choco install -y vscode'
           'choco install -y gh'
@@ -79,6 +80,7 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
           'if (![string]::IsNullOrEmpty("${customScript}")) {'
           '    Add-Content -Path $wrapperScriptPath -Value "powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -File C:\\scripts\\customSetup.ps1"' 
           '}'
+          'Add-Content -Path $wrapperScriptPath -Value "powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -Command "$genericImage = Get-BestGenericImageName; docker pull $genericImage"'
           'Set-ItemProperty -Path "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce" -Name "initialSetup" -Value "powershell.exe -File $wrapperScriptPath"'
         ] 
       }

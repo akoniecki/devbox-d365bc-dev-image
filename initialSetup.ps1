@@ -1,8 +1,6 @@
 choco install -y docker-engine
 Start-Service docker
 Install-Module BcContainerHelper -force
-$genericImage = Get-BestGenericImageName
-Start-Job -ScriptBlock { param($image) docker pull $image } -ArgumentList $genericImage
 $hostHelperFolder = 'C:\\ProgramData\\BcContainerHelper';
 if (-not (Test-Path $hostHelperFolder)) { New-Item -Path $hostHelperFolder -ItemType Directory };
 $acl = Get-Acl -Path $hostHelperFolder;
@@ -24,4 +22,3 @@ $dSec.AddAccessRule($rule);
 $dInfo.SetAccessControl($dSec);
 $extensions = "ms-dynamics-smb.al","github.vscode-pull-request-github","ms-azuretools.vscode-docker","ms-vscode.powershell"
 foreach ($ext in $extensions) { code --install-extension $ext }
-Start-Job -ScriptBlock { wsl.exe --update }
