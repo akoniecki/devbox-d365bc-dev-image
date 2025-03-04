@@ -1,6 +1,9 @@
 choco install -y docker-engine
 Start-Service docker
 Install-Module BcContainerHelper -force
+$installerPath = "$env:TEMP\\GitHubDesktopSetup-x64.msi"
+(new-object net.webclient).DownloadFile("https://central.github.com/deployments/desktop/desktop/latest/win32?format=msi", $installerPath)
+Start-Process msiexec.exe -ArgumentList "/i", $installerPath, "/qn" -NoNewWindow -Wait
 $hostHelperFolder = 'C:\\ProgramData\\BcContainerHelper';
 if (-not (Test-Path $hostHelperFolder)) { New-Item -Path $hostHelperFolder -ItemType Directory };
 $acl = Get-Acl -Path $hostHelperFolder;

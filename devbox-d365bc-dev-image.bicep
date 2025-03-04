@@ -49,9 +49,6 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
           'choco install -y vscode'
           'choco install -y gh'
           'refreshenv'
-          '$installerPath = "$env:TEMP\\GitHubDesktopSetup-x64.msi"'
-          '(new-object net.webclient).DownloadFile("https://central.github.com/deployments/desktop/desktop/latest/win32?format=msi", $installerPath)'
-          'Start-Process msiexec.exe -ArgumentList "/i", $installerPath, "/qn" -NoNewWindow -Wait'
         ]
       }
       {
@@ -80,7 +77,7 @@ resource azureImageBuilder 'Microsoft.VirtualMachineImages/imageTemplates@2022-0
           'if (![string]::IsNullOrEmpty("${customScript}")) {'
           '    Add-Content -Path $wrapperScriptPath -Value "powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -File C:\\scripts\\customSetup.ps1"' 
           '}'
-          'Add-Content -Path $wrapperScriptPath -Value "powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -Command "$genericImage = Get-BestGenericImageName; docker pull $genericImage"'
+          'Add-Content -Path $wrapperScriptPath -Value "powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -Command \'`$genericImage = Get-BestGenericImageName; docker pull `$genericImage;\'"'
           'Set-ItemProperty -Path "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce" -Name "initialSetup" -Value "powershell.exe -File $wrapperScriptPath"'
         ] 
       }
